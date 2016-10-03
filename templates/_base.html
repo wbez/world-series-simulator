@@ -12,12 +12,13 @@
     <!-- META TAGS -->
     {% include '_meta.html' %}
 
-    <!-- FONTS -->
-    {% include '_fonts.html' %}
-
     <!-- CSS -->
     {{ CSS.push('less/app.less') }}
-    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.push('less/world-series-simulator.less') }}
+    {% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="font/MyFontsWebfontsKit.css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
+    {% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
 
     {% include '_social_tags.html' %}
@@ -36,7 +37,7 @@
     {% block outer_content %}
 
     <nav role="navigation">
-      <a class="wbez-logo" href="https://wbez.org">
+      <a class="wbez-logo" href="http://wbez.org">
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="25" viewBox="0 0 673.5 181.6" enable-background="new 0 0 673.5 181.6" xml:space="preserve">
         <g>
          <path fill="#ED1C24" d="M439,128.4v7.9c0,10,3.4,14.7,11.3,14.7c7.9,0,12.3-4.7,12.3-14.7v-35.9c-6.8,6.8-11,10.2-21.7,10.2c-15.3,0-28-8.9-28-31.4V60.8c0-32.3,11-46.7,37.4-46.7c26.3,0,37.4,13.2,37.4,42v73.5 c0,28.9-11,42-37.4,42c-20.8,0.4-34.2-14.4-34.2-34v-9.3H439z M462.6,49.6c0-10-4.5-14.6-12.3-14.6c-7.9,0-12.3,4.7-12.3,14.6v25.5c0,10,4.5,14.6,11,14.6c4.7,0,10.4-4.5,13.6-7V49.6z"></path>
@@ -52,8 +53,9 @@
       </a>
   
         <ul class="social-links">
-            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ COPY.share.twitter_text|urlencode }}&amp;url={{ COPY.share.share_url|urlencode }}" alt="Share on Twitter" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'tweet', 'nav']);"><i class="fa fa-twitter"></i></a></li>
-            <li class="facebook"><a rel="external" href="https://www.facebook.com/sharer/sharer.php?u={{COPY.share.share_url}}" alt="Share on Facebook" target="_blank" onclick="_gaq.push(['_trackEvent', '{{ PROJECT_SLUG }}', 'facebook', 'nav']);"><i class="fa fa-facebook"></i></a></li>
+            <li class="donate"><a href="https://donate.chicagopublicmedia.org/give/wbez/"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+            <li class="twitter"><a rel="external" href="http://twitter.com/share?text={{ COPY.share.twitter_text|urlencode }}&amp;url={{ SHARE_URL|urlencode }}" alt="Share on Twitter" target="_blank"><i class="fa fa-twitter"></i></a></li>
+            <li class="facebook"><a rel="external" href="https://www.facebook.com/sharer/sharer.php?u={{COPY.share.share_url}}" alt="Share on Facebook" target="_blank"><i class="fa fa-facebook"></i></a></li>
         </ul>
 
     </nav>
@@ -62,21 +64,8 @@
     {% endblock header_content %}
 
     <section id="content">
-        <div class="container">
-            <div class="row">
-                <div id="main-content" class="col-md-8">
-                    {% block content %}
-                    <h1>{{ project_name }}</h1>
-                    App content goes here.
-
-                    <i class="icon icon-play"></i>
-                    {% endblock content %}
-                </div>
-
-            </div>
-            {% block wide_content %}
-            {% endblock wide_content %}
-        </div>
+        {% block content %}
+        {% endblock %}
     </section>
 
     <footer>
@@ -86,7 +75,7 @@
             </ul>
         </div>
         <div class="secondary">
-            <p>&copy;2015 WBEZ</p>
+            <p>&copy;2016 WBEZ</p>
             <ul>
                 <li id="footerContact"><a href="http://www.wbez.org/contact">Contact</a></li>
                 <li id="footerContact"><a href="https://www.chicagopublicmedia.org/page/privacy-policy">Privacy Policy</a></li>
@@ -100,37 +89,36 @@
     {% block comments %}
 
     {% endblock %}
-
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script> 
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/underscore.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
     {{ JS.push('js/lib/bootstrap.js') }}
     {{ JS.push('js/lib/moment.js') }}
     {{ JS.push('js/lib/ZeroClipboard.js') }}
-
-    {# uncomment both files to use simpleStorage #}
-    {# {{ JS.push('js/lib/simpleStorage.js') }} #}
-    {# {{ JS.push('js/storage.js') }} #}
-
-    {% if RELOAD_TRIGGER %}
-    {{ JS.push('js/reload.js') }}
-    {% endif %}
-
     {{ JS.push('js/copy.js') }}
-    {{ JS.push('js/console.js') }}
     {{ JS.push('js/templates.js') }}
-    {{ JS.push('js/comments.js') }}
     {{ JS.push('js/share.js') }}
     {{ JS.push('js/app.js') }}
+    {{ JS.push('js/lib/pym.js') }}
+    {{ JS.push('js/simulate_playoffs.js') }}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.render('js/app-footer.min.js') }}
 
     {% block extra_foot %}
+
     {% endblock extra_foot %}
 
-    {# Setup Chartbeat last! #}
-    <script type="text/javascript">
-        $(ANALYTICS.setupChartbeat);
+
+    <script type=""text/javascript"">
+    // $(function() {
+    //     var pymParent = new pym.Parent(
+    //         'responsive-embed-cubs',
+    //         'http://s3.amazonaws.com/wbez-dailygraphics/dailygraphics/graphics/cubs/child.html',
+    //         {}
+    //     );
+    // });
     </script>
 </body>
 </html>

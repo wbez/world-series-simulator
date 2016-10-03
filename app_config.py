@@ -99,19 +99,19 @@ COPY_PATH = 'data/copy.xlsx'
 """
 SHARING
 """
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
+SHARE_URL = 'http://interactive.wbez.org/world-series-simulator/'
 
 """
 SERVICES
 """
 NPR_GOOGLE_ANALYTICS = {
-    'ACCOUNT_ID': 'UA-369047-1', #add id here
+    'ACCOUNT_ID': 'UA-369047-40', #add id here
     'DOMAIN': 'wbez.org',
     'TOPICS': '' # e.g. '[1014,3,1003,1002,1001]'
 }
 
 VIZ_GOOGLE_ANALYTICS = {
-    'ACCOUNT_ID': 'UA-369047-1'
+    'ACCOUNT_ID': 'UA-369047-40'
 }
 
 DISQUS_API_KEY = ''

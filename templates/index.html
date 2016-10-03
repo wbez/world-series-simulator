@@ -1,56 +1,31 @@
 {% extends '_base.html' %}
 
-{% block header_content %}
-<header>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>{{ COPY.content.project_name|smarty }}</h1>
-                <h2>{{ COPY.content.lorem_ipsum|smarty }}</h2>
-            </div>
-        </div>
-    </div>
-</header>
-{% endblock %}
-
 
 {% block content %}
-<h1>{{ COPY.content.project_name }}</h1>
 
-<div id="story-meta">
-    <p class="byline">by <span>{{ COPY.content.byline }}</span></p>
-    <p class="dateblock">
-        <span class="date">{{ COPY.content.pubdate }}</span>
-        <span class="time"> {{ COPY.content.pubtime }}</span>
-    </p>
+<!-- <div class="row image col-sm-12 ">
+	<img src="assets/bg-image.png" class="img-responsive">
+</div> -->
+<div class="container-fluid">
+	<div class="row col-sm-12 header">
+		<div class="header-text">
+		    <h1 class="text-center">{{ COPY.content.project_name }}</h1>
+		    <p class="text-center byline">by {{ COPY.content.byline }} | published {{ COPY.content.pubdate }}<p>
+		    <p class="text-center subhed">{{ COPY.content.subhed }}</p>
+		</div>
+	</div>
+</div>
+<div class="container">
+	<div class="row col-sm-12 baseball-container">
+	    <img class="baseball center-block" src="assets/noun_baseball.svg"/>
+	</div>
+	<div class="row main">
+	{% for row in COPY.items%}
+	    <div class="text-block {% if row.class %}{{row.class}}{% endif %}" {% if row.id %}id="{{row.id}}"{% endif %}>
+	        {{row.text}}
+	    </div>
+	{% endfor %}
+	</div>
 </div>
 
-<a class="comment-button comment-button-bubble comment-drawer-toggle" href="javascript:">
-    <span class="comment-count"></span>
-</a>
-
-<a class="comment-button comment-button-article comment-drawer-toggle" data-toggle="modal" data-backdrop="static" data-target="#share-modal">
-    <span class="comment-count"></span>
-    <span class="comment-label">Share / Discuss</span>
-</a>
-
-<h2 class="knockout-example">Example COPY list</h2>
-<dl>
-    {% for row in COPY.example_list %}
-    <dt>{{ row.term }}</dt><dd>{{ row.definition }}</dd>
-    {% endfor %}
-</dl>
-
-<h2 class="knockout-example">JST example</h2>
-<p id="template-example"></p>
-{% endblock %}
-
-
-{% block wide_content %}
-<div class="row">
-    <div class="col-md-12">
-        <h2 class="knockout-example">{{ COPY.content.footer_title }}</h2>
-        <p>{{ COPY.content.lorem_ipsum }}</p>
-    </div>
-</div>
 {% endblock %}

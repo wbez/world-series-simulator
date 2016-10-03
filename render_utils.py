@@ -133,6 +133,7 @@ class CSSIncluder(Includer):
         for src in self.includes:
 
             src_paths.append('%s' % src)
+            print src
 
             try:
                 compressed_src = subprocess.check_output(["node_modules/less/bin/lessc", "-x", src])
