@@ -1,0 +1,239 @@
+body {
+	color: #333;
+	font-family:'Source Sans Pro', sans-serif;
+	overflow-x: hidden;
+}
+
+.header {
+	&:before {
+		content: ' ';
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100vh;
+		z-index: 0;
+		opacity: 1;
+		background-color: #fff;
+		background-image: url("../assets/bg-image.jpg");
+		background-size:100%;
+		background-repeat: no-repeat;
+		-webkit-background-size: cover;
+		-moz-background-size: cover;
+		-o-background-size: cover;
+		background-size: cover;
+		background-position: center top;
+	}
+
+	color:#fff;
+	text-shadow: 1px 1px #333;
+	padding:0px;
+	margin:0px;
+
+	height:100vh;
+
+	.header-text {
+		position: absolute;
+	    bottom: 10%;
+	    left: 0; 
+		right: 0; 
+		margin-left: auto; 
+		margin-right: auto; 
+		width:80%;
+	}
+
+	// .photo-credit {
+	// 	position: absolute;
+	//     bottom: 10%;
+	//     left: 0; 
+	// 	right: 0; 
+	// 	margin-left: auto; 
+	// 	margin-right: auto; 
+	// 	width:80%;
+	// }
+
+	h1 {
+		font-size: 3em;	
+		text-shadow: 2px 2px #333;	
+		font-family:"CharterITCStd-Bold","Georgia",serif;
+	}
+
+	.subhed {
+		font-size: 1em;
+		text-shadow: 2px 2px 1px #000;
+	}
+
+	.byline {
+		font-style: italic;
+		font-size: 14px;
+	}
+
+}
+
+nav {
+	border-bottom: none;
+	position:fixed;
+	z-index: 99;
+	width:100%;
+}
+
+p {
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+.image {
+	padding:0;
+}
+
+h3 {
+	font-family:"CharterITCStd-Bold","Georgia",serif;
+}
+
+#graphic,#example,#update {
+	background-color: #415949;
+	border-radius: 20px;
+	margin: 15px 0px;
+
+	text {
+		fill:#fff;
+		font-family:'Source Sans Pro', sans-serif;
+		text-transform: uppercase;
+		font-size: 12px;
+
+		&.american, &.national {
+			font-size: 24px;
+		}
+
+		&.winner {
+			font-weight: 700;
+			font-size: 13px;
+		}
+
+		&.loser {
+			text-decoration: line-through;
+		}
+
+		&.cubs {
+			fill:#67ABE5;
+			// stroke: #D12325;
+		 //    stroke-width: 0.5px;
+		}
+	}
+
+	// .series.ws text {
+	// 	font-size: 16px;
+	// 	font-weight: 700;
+	// }
+
+	.team text {
+		font-size: 12px;
+	}
+
+	.round text {
+		font-size: 12px;
+	}
+
+	.total text {
+		font-size: 16px;
+	}
+
+	line {
+		stroke:#fff;
+		stroke-width:4px;
+	}
+}
+.update {
+	font-style: italic;
+	font-weight: 700;
+}
+
+.thebutton,.thebutton1000,.reset {
+	float:right;
+	margin-top: 14px;
+	margin-bottom: 0px;
+}
+
+.thebutton {
+	font-weight: 700;
+}
+// .thebutton {
+//     position: absolute;
+//     right: 24px;
+//     top: 24px;  
+// }
+
+// .thebutton1000 {
+//     position: absolute;
+//     right: 24px;
+//     top: 60px;
+// }
+
+// .reset {
+//     position: absolute;
+//     right: 24px;
+//     top: 96px;
+// }
+
+.form-group {
+	margin-top: 25px;
+}
+
+.source {
+	margin: 20px 0px;
+	font-style: italic;
+	font-size: 12px;
+}
+
+.baseball-container {
+	margin-top: 15px;
+}
+
+.baseball {
+	height: 2em;
+	width: 2em;
+}
+
+#content {
+	margin-top: 0px;
+}
+
+@media (min-width: 768px) {
+	.subhed {
+		font-size: 2em;
+	}
+
+	h1 {
+		font-size: 4em;
+	}
+
+}
+
+@media (max-width: 320px) {
+	#graphic,#example,#update {
+		text {
+			font-size: 11px;
+			&.winner {
+				font-weight: 700;
+				font-size: 11px;
+			}
+		}
+
+		.team text {
+			font-size: 11px;
+		}
+
+		.round text {
+			font-size: 11px;
+		}
+
+		.total text {
+			font-size: 16px;
+		}
+
+		line {
+			stroke:#fff;
+			stroke-width:3px;
+		}
+	}
+}
