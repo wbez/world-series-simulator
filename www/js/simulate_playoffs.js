@@ -69,8 +69,6 @@ var log5 = function(team1pct,team2pct,H){
     probability = (team1pct - team1pct*team2pct)/(team1pct+team2pct-2*team1pct*team2pct);
     probabilityH = 1 / ( 1 + ((1-team1pct)*team2pct*(1-H))/(team1pct*(1-team2pct)*H) );
     
-    // console.log(probability,probabilityH);
-
     return probabilityH;
 } 
 
@@ -213,19 +211,6 @@ var processPlayoffs = function(data,series_container){
                     next_round:value.next_round,
                 });
 
-                // series_list_2.push({
-                //     seriesid: count,
-                //     round: round,
-                //     league: league,
-                //     topteam: topteam,
-                //     bottomteam: bottomteam,
-                //     wins:wins,
-                //     season_wins:season_wins,
-                //     wins_needed: wins_needed,
-                //     games:[],
-                //     next_round:value.next_round
-                // });
-
                 count++;
             }
 
@@ -302,6 +287,7 @@ var drawGraph = function(graphicWidth, id, data) {
     var width = graphicWidth - GRAPHIC_MARGIN['left'] - GRAPHIC_MARGIN['right'];
     var height = seriesheight*series_multiplier;
 
+    // define x offset amount for each round
     var series_offset = d3.scaleOrdinal()
         .domain(rounds)
         .range([0,width*column_percent,width*column_percent*2,width*column_percent*2]);
@@ -313,7 +299,7 @@ var drawGraph = function(graphicWidth, id, data) {
         .append('g')
             .attr('transform', 'translate(' + GRAPHIC_MARGIN['left'] + ',' + GRAPHIC_MARGIN['top'] + ')');
 
-    // draw top titles
+    // draw league titles
     national = bracket.append("g");
 
     national.append('text')
@@ -330,6 +316,7 @@ var drawGraph = function(graphicWidth, id, data) {
         .attr("class", "national")
         .text("AMERICAN");
 
+    // if the simulation chart, add a world series title
     if (id==GRAPHIC_ID) {
         total_wins = bracket.append("g");
 
@@ -340,6 +327,7 @@ var drawGraph = function(graphicWidth, id, data) {
             .text("TOTAL WORLD SERIES WINS");
     }
 
+    // function to remove all series from all brackets
     var clear_bracket = function(callback){
         // console.log('clear_bracket');
 
@@ -362,41 +350,17 @@ var drawGraph = function(graphicWidth, id, data) {
         callback();
     }
 
+    // function to create a new empty bracket
     var create_bracket = function() {
 
-        winnerbox = bracket.append("g")
-            .data([{winner: undefined}])
-            .attr("class", "winner");
-
-        winnerbox
-            .append("text")
-            .attr("x", width*0.75+text_margin)
-            .attr("y", league_offset('ws')+lds_offset(9));
-
-        // round_labels = bracket.selectAll('.round_labels')
-        //     .data(rounds)
-        //     .enter()
-        //     .append('g')
-        //         .attr("class", function(d) { return "round " +d; });
-
-        // round_labels.append('text')
-        //     .attr("x", function(d){return series_offset(d)})
-        //     .attr("y", -lineheight*1.5)
-        //     .attr("class", "top")
-        //     .text(function(d) { 
-        //         if (isMobile) {
-        //             return round_names(d); 
-        //         } else {
-        //             return round_names(d); 
-        //         }
-        //     });
-
+        // create all series containers
         series = bracket.selectAll('.series')
             .data(series_list)
             .enter()
             .append('g')
                 .attr("class", function(d) { return "series " +d.league+' '+d.round +' series'+d.seriesid; });
 
+        // add scoreboard lines for each series, top, bottom, then right
         series.append("line")
             .attr("x1", function(d){return series_offset(d.round)})
             .attr("x2", function(d){return series_offset(d.round)+width*column_percent})
@@ -418,6 +382,7 @@ var drawGraph = function(graphicWidth, id, data) {
             .attr("y2", function(d,i){return league_offset(d.league)+lds_offset(d.seriesid)+lineheight*1.5})
             .attr("class", "end");
 
+        // add text for top team in series
         series.append('text')
             .attr("x", function(d){return series_offset(d.round)+text_margin})
             .attr("y", function(d,i){return league_offset(d.league)+lds_offset(d.seriesid)})
@@ -444,6 +409,7 @@ var drawGraph = function(graphicWidth, id, data) {
                 }
             });
 
+        // add text for bottom team in series
         series.append('text')
             .attr("x", function(d){return series_offset(d.round)+text_margin})
             .attr("y", function(d,i){return league_offset(d.league)+lds_offset(d.seriesid)+lineheight})
@@ -470,6 +436,7 @@ var drawGraph = function(graphicWidth, id, data) {
                 }
             });
 
+        // if the simulation bracket, create a world series titles scoreboard
         if (id==GRAPHIC_ID) {
             team_scorecard = bracket.selectAll('.team')
                 .data(teams)
@@ -500,13 +467,16 @@ var drawGraph = function(graphicWidth, id, data) {
         }
     }
 
+    // function to play a series and advance team to next series
+    // requires two team objects and a series object
     var play_series = function(topteam,bottomteam,series) {
-        // Adjusts number of homegames to the correct teams
-        // If top team has homefield, sets equal to 0
+        
         // topteam = JSON.parse(JSON.stringify(topteam))
         // bottom = JSON.parse(JSON.stringify(bottomteam))
         graph = d3.select(GRAPHIC_ID);
 
+        // Adjusts number of homegames to the correct teams
+        // If top team has homefield, sets equal to 0
         if (topteam.league=='nl' & bottomteam.league=='al') {
           homefield = -1;
         } else if (topteam.league=='al' & bottomteam.league=='nl'){
@@ -519,6 +489,7 @@ var drawGraph = function(graphicWidth, id, data) {
           homefield = 0;
         }
         
+        // caulculate homefield advantage H and expected winning percentage for top team
         games = series_games(series.round);
         H = ((series.wins_needed+homefield) * .54 + (series.wins_needed-1-homefield) * .46)/games;
         topteam_pct = log5(topteam.win,bottomteam.win,H);
@@ -526,13 +497,13 @@ var drawGraph = function(graphicWidth, id, data) {
         topteam.wins = 0;
         bottomteam.wins = 0;
 
+        // get expected series winning percentage from probability matrix
         matrix_id = 'matrix_'+games;
-
         matrix = matrices[matrix_id];
-
         bottomteam.probability = matrix[topteam.nickname][bottomteam.nickname];
         topteam.probability = matrix[bottomteam.nickname][topteam.nickname];
 
+        // simulate each game individualy until one team has enough to advance
         for (i=0;i<games;i++) {
             number = Math.random();
 
@@ -565,6 +536,7 @@ var drawGraph = function(graphicWidth, id, data) {
 
     }
 
+    // function to run playoffs as they actually occured, using the real_win variable as the deciding factor
     var play_actual = function(topteam,bottomteam,series) {
 
         // topteam = JSON.parse(JSON.stringify(topteam))
@@ -604,6 +576,7 @@ var drawGraph = function(graphicWidth, id, data) {
 
     }
 
+    // function to run playoffs advancing only favorites, using the probaility matrix variable as the deciding factor
     var play_favorites = function(topteam,bottomteam,series) {
 
         // topteam = JSON.parse(JSON.stringify(topteam))
@@ -634,10 +607,16 @@ var drawGraph = function(graphicWidth, id, data) {
 
     }
 
+    //function to move a team to the next series or declare them the winner
     var advance = function(winner,series,id) {
         graph = d3.select(id);
+
+        // this breaks the relationship to the previous series
         winner = JSON.parse(JSON.stringify(winner));
+        // this resets the team's series probability for the next matchup
         winner.probability = null;
+
+        // determine the next series and whether the team should be top or bottom in the next bracket
         if (series.next_round == 'ws') {
             next_series_id = 8;
             if (series.league == 'nl'){is_top = true;}
@@ -676,9 +655,11 @@ var drawGraph = function(graphicWidth, id, data) {
 
     }
 
+    // add text to the bracket based on a simulation
     var drawWinners = function(draw_id){
         graph = d3.select(draw_id);
 
+        // update bottom teams
         graph.selectAll(".series" +'>text.top')
             .text(function(d) { 
                 if (d.topteam) {
@@ -711,6 +692,7 @@ var drawGraph = function(graphicWidth, id, data) {
                 }
             });
 
+        // update bottom teams
         graph.selectAll(".series" +'>text.bottom')
             .text(function(d) { 
                 if (d.bottomteam) {
@@ -743,6 +725,7 @@ var drawGraph = function(graphicWidth, id, data) {
                 }
             });
 
+        // update scoreboard
         graph.selectAll('.team >text')
             .text(function(d) {
                 if (total_sim>0){
@@ -755,21 +738,30 @@ var drawGraph = function(graphicWidth, id, data) {
 
     }
 
+    // intialize the bracket
     create_bracket();
     
+    // function to simulate the main bracket
     var simulate = function(){
         graph = d3.select(GRAPHIC_ID);
         create_bracket();
+
+        // remove winner class from all series
         graph.selectAll('.winner')
             .classed('winner',false);
+
+        // simulate each series
         $.each(series_list_1,function(i,series){
             graph.select('.series'+i).each(function(d){
                 play_series(d.topteam,d.bottomteam,series);
             })
         })
+
+        // display text for each series
         drawWinners(GRAPHIC_ID);
     }
 
+    // function to simulate the favorites bracket
     var simulate_favorites = function(){
         graph = d3.select(GRAPHIC_ID_EXAMPLE);
         
@@ -784,6 +776,7 @@ var drawGraph = function(graphicWidth, id, data) {
         drawWinners(GRAPHIC_ID_EXAMPLE);
     }
 
+    // function to simulate the real life bracket
     var simulate_actual = function(){
         graph = d3.select(GRAPHIC_ID_UPDATE);
         
@@ -800,6 +793,8 @@ var drawGraph = function(graphicWidth, id, data) {
         drawWinners(GRAPHIC_ID_UPDATE);
     }
 
+    // helper function to make sure simulations wait for the previous call to finish
+    // from http://thecodeship.com/web-development/alternative-to-javascript-evil-setinterval/
     function interval(func, wait, times){
         var interv = function(w, t){
             return function(){
@@ -822,6 +817,8 @@ var drawGraph = function(graphicWidth, id, data) {
 
     };
 
+    // buttons to trigger simulations
+    // need to unbind the click incase the button has been redrawn
     $('.thebutton').unbind('click').click(function(){
         simulate();
     })
@@ -846,6 +843,7 @@ var drawGraph = function(graphicWidth, id, data) {
         total_sim = 0;
     })
 
+    // simulate and draw the favorites and actual brackets
     simulate_favorites();
     simulate_actual();
 }
